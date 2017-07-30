@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.EmpDao">
+	 <!-- 查询 -->
+	 <sql id="emp">
+	 select id,name,age,salary from emp
+	 </sql>
+	  <select id="selectOne" parameterType="string" resultType="com.baizhi.entity.Emp">
+		  <include refid="emp"/> where id=#{id}
+	  </select>
+	  
+	  <select id="select" resultType="com.baizhi.entity.Emp">
+	      <include refid="emp"/>
+	  </select>
+	<!-- 添加 -->
+	  <insert id="add" parameterType="com.baizhi.entity.Emp">
+	  insert into emp values(#{id},#{name},#{age},#{salary})
+	  </insert>
+	  <!-- 删除 -->
+	  <delete id="delete" parameterType="string">
+	  delete from emp where id=#{id}
+	  </delete>
+	  <!-- 修改 -->
+     <update id="change" parameterType="com.baizhi.entity.Emp">
+     update emp set name=#{name},age=#{age},salary=#{salary} where id=#{id}
+     </update>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN" "struts-2.1.7.dtd" >
+<struts>
+    <!-- 验证码 -->
+    <package name="imageCode" extends="struts-default" namespace="/imageCode">
+		<action name="imageCode" class="imageAction" method="random"/>
+	</package>
+  <!-- 用户 -->
+  <package name="user" extends="struts-default" namespace="/user">
+  <action name="insert" class="userAction" method="regist">
+    <result>/emsdemo/login.jsp</result>
+  </action>
+  
+  <action name="login" class="userAction" method="login">
+    <result type="redirectAction">
+       <param name="namespace">/emp</param>
+       <param name="actionName">all</param>
+    </result>
+  </action>
+  </package>
+  
+  <package name="emp" extends="struts-default" namespace="/emp">
+  <!-- 查所有 -->
+    <action name="all" class="empAction" method="queryAll">
+      <result>/emsdemo/emplist.jsp</result>
+    </action>
+   <!-- 查一个 -->
+   <action name="one" class="empAction" method="queryOne">
+      <result>/emsdemo/updateEmp.jsp</result>
+    </action>
+    <!-- 添加 -->
+    <action name="insert" class="com.baizhi.action.EmpAction" method="regist">
+      <result type="redirectAction">all</result>
+    </action>
+    <!-- 删除 -->
+    <action name="delete" class="empAction" method="drop">
+       <result type="redirectAction">all</result>
+    </action>
+    <!-- 修改 -->
+    <action name="update" class="empAction" method="update">
+       <result type="redirectAction">all</result>
+    </action>
+    <!-- 导出 -->
+    <action name="load" class="empAction" method="downLode"/>
+  </package>
+</struts>
