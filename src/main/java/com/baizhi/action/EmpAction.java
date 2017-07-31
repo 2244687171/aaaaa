@@ -38,6 +38,7 @@ public class EmpAction extends ActionSupport {
     private List<Emp> list;
     private String id;
     private Emp emp;
+    private Emp emp1;
     
     
 	public Emp getEmp() {
@@ -65,89 +66,89 @@ public class EmpAction extends ActionSupport {
 	}
 
 	
-	//查所有
+	//鏌ユ墍鏈�
 	public String queryAll(){
 		 list = empService.selectEmp();
 		 System.out.println(list);
 		 return SUCCESS;
 	}
-  //查一个
+  //鏌ヤ竴涓�
 	public String queryOne(){
 		 emp = empService.showOne(id);
 		 return SUCCESS;
 	}
-	//添加
+	//娣诲姞
 	public String regist(){
 		empService.insertEmp(emp);
 		return SUCCESS;
 	}
-	//删除
+	//鍒犻櫎
 	public String drop(){
 		empService.dropEmp(id);
 		return SUCCESS;
 	}
-	//修改
+	//淇敼
 	public String update(){
 		empService.UpdateEmp(emp);
 		return SUCCESS;
 	}
-	//导出excel表格
+	//瀵煎嚭excel琛ㄦ牸
 	public String downLode() throws Exception{
-		 //创建一个工作空间
+		 //鍒涘缓涓�釜宸ヤ綔绌洪棿
 		Workbook workbook = new HSSFWorkbook();
-		//创建工作簿
-		Sheet sheet = workbook.createSheet("员工的基本信息");
-		//合并单元格
-		//合并区域
+		//鍒涘缓宸ヤ綔绨�
+		Sheet sheet = workbook.createSheet("鍛樺伐鐨勫熀鏈俊鎭�);
+		//鍚堝苟鍗曞厓鏍�
+		//鍚堝苟鍖哄煙
 		CellRangeAddress address = new CellRangeAddress(0, 1, 0, 5);
 		sheet.addMergedRegion(address);
-		//设置整个sheet宽度
+		//璁剧疆鏁翠釜sheet瀹藉害
 		sheet.setDefaultColumnWidth(20);
-		//创建一级标题
+		//鍒涘缓涓�骇鏍囬
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
 		CellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setAlignment(HorizontalAlignment.CENTER);//居中对齐
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);//灞呬腑瀵归綈
 		Font font = workbook.createFont();
 		font.setFontHeightInPoints((short) 18);
-		cellStyle.setFont(font);//设置字体
-		cell.setCellStyle(cellStyle );//设置样式
-		cell.setCellValue("员工基本信息");
-		//创建二级标题
+		cellStyle.setFont(font);//璁剧疆瀛椾綋
+		cell.setCellStyle(cellStyle );//璁剧疆鏍峰紡
+		cell.setCellValue("鍛樺伐鍩烘湰淇℃伅");
+		//鍒涘缓浜岀骇鏍囬
 		Row titleRow = sheet.createRow(2);
-		//创建标题列
+		//鍒涘缓鏍囬鍒�
 		Field[] declaredFields = Emp.class.getDeclaredFields();
 		for (int i = 0; i < declaredFields.length; i++) {
 			Cell colCell = titleRow.createCell(i);
 			colCell.setCellValue(getValue(declaredFields[i].getName()));
 		}
-		//创建数据列
+		//鍒涘缓鏁版嵁鍒�
 		list = empService.selectEmp();
 		for (int i = 0; i < list.size(); i++) {
-			Row dataRow = sheet.createRow(i+3); //数据行
-			//创建数据列
+			Row dataRow = sheet.createRow(i+3); //鏁版嵁琛�
+			//鍒涘缓鏁版嵁鍒�
 			for (int j = 0; j < declaredFields.length; j++) {
 				Cell dataCell = dataRow.createCell(j);
 				
-				//通过反射调用类中的方法
+				//閫氳繃鍙嶅皠璋冪敤绫讳腑鐨勬柟娉�
 				String getMethodName = "get" + 
 										declaredFields[j].getName().substring(0, 1).toUpperCase()
 										+declaredFields[j].getName().substring(1);
 				
-				//返回方法对象 //参数一:方法的名字   //参数二:方法参数的类型
+				//杩斿洖鏂规硶瀵硅薄 //鍙傛暟涓�鏂规硶鐨勫悕瀛�  //鍙傛暟浜�鏂规硶鍙傛暟鐨勭被鍨�
 				Method getMethod = Emp.class.getDeclaredMethod(getMethodName, new Class[]{});
 				
-				//执行方法  参数一:执行那个对象中的方法    参数二:该方法的参数
+				//鎵ц鏂规硶  鍙傛暟涓�鎵ц閭ｄ釜瀵硅薄涓殑鏂规硶    鍙傛暟浜�璇ユ柟娉曠殑鍙傛暟
 				Object invoke = getMethod.invoke(list.get(i), new Object[]{});
-				//考虑日期类型
+				//鑰冭檻鏃ユ湡绫诲瀷
 				if(declaredFields[j].getType()  == Date.class){
 					dataCell.setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(invoke));
 				}
-				/*//考虑关系属性   对象|集合
+				/*//鑰冭檻鍏崇郴灞炴�   瀵硅薄|闆嗗悎
 				if(declaredFields[j].getType() == City.class){
 					dataCell.setCellValue(((City)invoke).getName());
 				}*/
-				/*//考虑集合
+				/*//鑰冭檻闆嗗悎
 				if (declaredFields[j].getType()==List.class && declaredFields[j].getName().equals("tags")) {
 					List<Tag> list = (List<Tag>)invoke;
 					StringBuilder sb = new StringBuilder();
@@ -156,7 +157,7 @@ public class EmpAction extends ActionSupport {
 					}
 					dataCell.setCellValue(sb.toString());
 				}*/
-				//考虑基本属性
+				//鑰冭檻鍩烘湰灞炴�
 				if(declaredFields[j].getType() == Integer.class 
 							|| declaredFields[j].getType() == String.class  
 							|| declaredFields[j].getType() == Double.class){
@@ -166,7 +167,7 @@ public class EmpAction extends ActionSupport {
 			}
 		}
 		
-		//写出Excel
+		//鍐欏嚭Excel
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("content-disposition", "attments;fileName=allEmp.xls");
@@ -180,10 +181,10 @@ return NONE;
 
 	public static String  getValue(String key){
 		Map<String,String> map = new HashMap<String,String>();
-		map.put("id", "编号");
-		map.put("name", "姓名");
-		map.put("age", "年龄");
-		map.put("salary", "工资");
+		map.put("id", "缂栧彿");
+		map.put("name", "濮撳悕");
+		map.put("age", "骞撮緞");
+		map.put("salary", "宸ヨ祫");
 		return map.get(key);
 	}
 }
